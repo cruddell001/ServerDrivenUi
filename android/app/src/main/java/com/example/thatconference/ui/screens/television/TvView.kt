@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.thatconference.models.TvShow
+import com.example.thatconference.ui.shared.ColumnSpacer
 import com.example.thatconference.ui.shared.FullWidthImage
 import com.example.thatconference.ui.shared.TitleWithScrimView
 
@@ -25,13 +26,10 @@ fun TvView(show: TvShow, selected: Boolean, onClick: () -> Unit) {
         Column {
             Box(Modifier.height(IntrinsicSize.Min)) {
                 val imageUrl = show.backdropImage.ifEmpty { show.posterImage }
-                FullWidthImage(imageUrl, show.name, 200.dp)
+                FullWidthImage(imageUrl, show.name, 150.dp)
                 Column(Modifier.fillMaxHeight()) {
+                    ColumnSpacer()
                     TitleWithScrimView(text = show.name)
-                    Spacer(modifier = Modifier.fillMaxHeight().weight(1f))
-                    AnimatedVisibility(visible = !selected) {
-                        TitleWithScrimView(text = show.description, fontSize = 16.sp, textWrap = false)
-                    }
                 }
             }
 

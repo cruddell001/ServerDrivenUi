@@ -11,7 +11,7 @@ import kotlinx.serialization.decodeFromString
 
 
 object ApiHelper {
-    private val baseUrl = "http://192.168.68.106:8080"
+    private val baseUrl = "http://10.0.2.2:8080"
 
     @PublishedApi internal val client = HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -37,17 +37,17 @@ object ApiHelper {
     @PublishedApi
     internal suspend inline fun <reified T>makeRequest(method: HttpMethod, url: String, requestBody: Any? = null): T? {
         println("makeRequest($method): $url")
-        val resp = when (method) {
-            HttpMethod.GET -> client.get(url)
-            HttpMethod.POST -> client.post(url) {
-                setBody(requestBody)
-            }
-            HttpMethod.PUT -> client.put(url) {
-                setBody(requestBody)
-            }
-            HttpMethod.DELETE -> client.delete(url)
-        }
         return try {
+            val resp = when (method) {
+                HttpMethod.GET -> client.get(url)
+                HttpMethod.POST -> client.post(url) {
+                    setBody(requestBody)
+                }
+                HttpMethod.PUT -> client.put(url) {
+                    setBody(requestBody)
+                }
+                HttpMethod.DELETE -> client.delete(url)
+            }
             val body = resp.bodyAsText()
             Log.d("ApiHelper", body)
             jsonSerializer.decodeFromString(body)
