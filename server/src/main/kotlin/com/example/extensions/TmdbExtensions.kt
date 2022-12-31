@@ -8,6 +8,7 @@ import com.example.models.tmdb.TmdbMovie
 import com.example.models.tmdb.TmdbMovieList
 import com.example.models.tmdb.TmdbShow
 import com.example.models.tmdb.TmdbShowList
+import com.example.models.ui.*
 
 fun TmdbMovie.asMovie(): Movie = Movie(
     id = this.id,
@@ -49,3 +50,83 @@ fun TmdbShowList.asShowList(): TvShowList = TvShowList(
     pageCount = results.size,
     results = this.results.map { it.asShow() }
 )
+
+fun Movie.asServerUi(): ServerView = CardView(
+    ColumnView(
+        listOf(
+            BoxView(
+                constrainHeight = true,
+                padding = 0,
+                items = listOf(
+                    FullWidthImageView(
+                        this.backdropImage.ifEmpty { this.posterImage },
+                        contentDescription = this.title
+                    ),
+                    ColumnView(
+                        listOf(
+                            SpacerView(),
+                            TitleWithScrimView(this.title)
+                        ),
+                    )
+                )
+            ),
+            AnimatedVisibility(
+                BoxView(
+                    constrainHeight = true,
+                    padding = 8,
+                    items = listOf(
+                        TextView(this.description)
+                    )
+                )
+            )
+        ),
+    )
+)
+
+fun TmdbMovieList.asServerUi(): ServerView =
+    ListView(this.results.map { it.asMovie().asServerUi() })
+
+fun TvShow.asServerUi(): ServerView {
+    return CardView(
+        ColumnView(
+            listOf(
+                BoxView(items = listOf(
+                    FullWidthImageView(this.backdropImage.ifEmpty { this.posterImage }, contentDescription = this.name, height = 200),
+                    ColumnView(
+                        listOf(
+                            TitleWithScrimView(this.name),
+                            SpacerView(vertical = true),
+                            BoxView(
+                                items = listOf(
+                                    TextView(
+                                        text = this.description,
+                                        fontSize = 16,
+                                        color = "#ffffff",
+                                        wrapText = false,
+                                        padding = 4
+                                    )
+                                ),
+                                bgColor = "#66000000"
+                            )
+                        )
+                    )
+                )),
+                AnimatedVisibility(
+                    BoxView(
+                        constrainHeight = true,
+                        padding = 8,
+                        items = listOf(
+                            ColumnView(listOf(
+                                TextView(this.firstAirDate, bold = true, fontSize = 18),
+                                TextView(this.description)
+                            ))
+                        )
+                    )
+                )
+            )
+        )
+    )
+}
+
+fun TmdbShowList.asServerUi(): ServerView =
+    ListView(this.results.map { it.asShow().asServerUi() })

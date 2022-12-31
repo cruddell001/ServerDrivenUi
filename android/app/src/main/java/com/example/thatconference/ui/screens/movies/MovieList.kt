@@ -11,26 +11,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.thatconference.models.Movie
+import com.example.thatconference.models.ui.GenericServerView
+import com.example.thatconference.models.ui.ServerView
 import com.example.thatconference.repository.DataRepository
+import com.example.thatconference.ui.shared.Composable
 
 @Composable
 fun MovieList() {
     var movies by remember { mutableStateOf<List<Movie>>(emptyList()) }
+    var serverUi: ServerView by remember { mutableStateOf(GenericServerView()) }
     var selected by remember { mutableStateOf<Long?>(null) }
 
     LaunchedEffect(key1 = Unit) {
         movies = DataRepository.popularMovies()
+        serverUi = DataRepository.moviesAsUi()
     }
 
     Box(Modifier.fillMaxSize().background(Color.LightGray)) {
-        Column(Modifier.verticalScroll(rememberScrollState())) {
-            movies.forEach {
-                MovieView(it, selected = selected == it.id) {
-                    selected =
-                        if (selected == it.id) null
-                        else it.id
-                }
-            }
-        }
+        serverUi.Composable()
+//        Column(Modifier.verticalScroll(rememberScrollState())) {
+//            movies.forEach {
+//                MovieView(it, selected = selected == it.id) {
+//                    selected =
+//                        if (selected == it.id) null
+//                        else it.id
+//                }
+//            }
+//        }
     }
 }
